@@ -22,7 +22,7 @@
     composer global require erefef/php_tenyakshev_ma
 3. Запустите игру из командной строки:
     ```bash
-    gcd
+    calc
 ## Используемые технологии
 - PHP — основной язык разработки.
 - Composer — для управления зависимостями и автозагрузки.
