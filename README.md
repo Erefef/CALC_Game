@@ -39,7 +39,7 @@ Task01/CALC \
 └── README.md                 # Описание проекта 
 
 ## Ссылки
-- Packagist: [GCD Game](https://packagist.org/packages/erefef/php_tenyakshev_ma)
+- Packagist: [CALC Game](https://packagist.org/packages/erefef/php_tenyakshev_ma)
 - [Репозиторий на GitHub](https://github.com/Erefef/CALC_Game)
 - Автор: erefef
 - Лицензия: MIT
