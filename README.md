@@ -14,7 +14,7 @@
     composer install
 - Запустите игру:
     ```bash
-    php bin/calc
+    php bin/calcg
 ### Установка через Packagist
 1. Убедитесь, что Composer установлен глобально.
 2. Установите игру:
@@ -22,7 +22,7 @@
     composer global require erefef/php_tenyakshev_ma
 3. Запустите игру из командной строки:
     ```bash
-    calc
+    calcg
 ## Используемые технологии
 - PHP — основной язык разработки.
 - Composer — для управления зависимостями и автозагрузки.
@@ -31,7 +31,7 @@
 
 Task01/CALC \
 ├── bin/ \
-│   └── calc       # Запускной файл игры \
+│   └── calcg       # Запускной файл игры \
 ├── src/ \
 │   ├── Controller.php        # Логика управления игрой \
 │   └── View.php              # Функции отображения \
