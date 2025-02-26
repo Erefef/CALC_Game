@@ -8,19 +8,20 @@ class ComposerStaticInit9e77d5f6b231d3ca901e81b57224cf55
 {
     public static $files = array (
         'be01b9b16925dcb22165c40b46681ac6' => __DIR__ . '/..' . '/wp-cli/php-cli-tools/lib/cli/cli.php',
-        '3dc6458a26b933b2bc81ac045438e26b' => __DIR__ . '/../..' . '/src/Controller.php',
-        '0a2c4d57f12028f5e2acbbc97010e84e' => __DIR__ . '/../..' . '/src/View.php',
+        '6ebee20d554188b88e9fce23562d803a' => __DIR__ . '/../..' . '/src/Controller.php',
+        'f6f0875a04891de99b48aedae0eda9e7' => __DIR__ . '/../..' . '/src/View.php',
+        '8f3b9ddaf3fb8e31931e73fae2efc4a1' => __DIR__ . '/../..' . '/src/Database.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'E' => 
+        'S' => 
         array (
-            'Erefef\\CALC\\' => 12,
+            'Shindasayonara\\GCD\\' => 19,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Erefef\\CALC\\' => 
+        'Shindasayonara\\GCD\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

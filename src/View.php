@@ -1,9 +1,14 @@
 <?php
 
-namespace Erefef\CALC\View;
+namespace Erefef\CalcG\View;
 
-function displayStartScreen()
+function displayQuestion($expression)
 {
-
-    echo "Welcome!\n";
+    echo "Вычисли выражение: $expression ";
 }
+
+function displayResult($message)
+{
+    echo "$message\n";
+}
+
