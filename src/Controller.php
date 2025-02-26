@@ -7,6 +7,7 @@ use Erefef\CalcG\Database;
 
 function startCalcGame($playerName)
 {
+    // Определяем, запущена ли игра в консоли или через сервер
     if (php_sapi_name() === 'cli') {
         echo "Привет, $playerName! Давай решим пример.\n";
         $expression = generateExpression();
@@ -24,7 +25,10 @@ function startCalcGame($playerName)
         return;
     }
 
-    // Если это не консоль, продолжаем HTML-логигу
+    // *** Для серверной версии ***
+    $expression = generateExpression();
+    $correctAnswer = eval("return $expression;");
+
     ?>
     <!DOCTYPE html>
     <html lang="ru">
@@ -50,11 +54,10 @@ function startCalcGame($playerName)
     <?php
 }
 
-// Функция для вычисления НОД (Алгоритм Евклида)
+// Генерируем случайное математическое выражение
 function generateExpression()
 {
     $numbers = range(1, 9);
     shuffle($numbers);
-    $expression = "{$numbers[0]}+{$numbers[1]}-{$numbers[2]}*{$numbers[3]}";
-    return $expression;
+    return "{$numbers[0]}+{$numbers[1]}-{$numbers[2]}*{$numbers[3]}";
 }
