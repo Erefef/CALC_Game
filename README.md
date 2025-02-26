@@ -46,8 +46,8 @@
 - Очистка базы данных: `http://localhost:3000/clear.php`
 
 ## Ссылки
-- Packagist: [GCD Game](https://packagist.org/packages/shindasayonara/php_puchkin_iyu)
-- [Репозиторий на GitHub](https://github.com/shindasayonara/GCD_Game)
-- Автор: **shindasayonara**
-- Лицензия: **MIT**
+- Packagist: [CALC Game](https://packagist.org/packages/erefef/php_tenyakshev_ma)
+- [Репозиторий на GitHub](https://github.com/Erefef/CALC_Game)
+- Автор: erefef
+- Лицензия: MIT
 
