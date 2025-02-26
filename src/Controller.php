@@ -7,9 +7,24 @@ use Erefef\CalcG\Database;
 
 function startCalcGame($playerName)
 {
-    $expression = generateExpression();
-    $correctAnswer = eval("return $expression;");
+    if (php_sapi_name() === 'cli') {
+        echo "Привет, $playerName! Давай решим пример.\n";
+        $expression = generateExpression();
+        $correctAnswer = eval("return $expression;");
+        echo "Пример: $expression = ?\n";
+        
+        echo "Введите ваш ответ: ";
+        $playerAnswer = trim(fgets(STDIN));
 
+        if ($playerAnswer == $correctAnswer) {
+            echo "Верно!\n";
+        } else {
+            echo "Неверно! Правильный ответ: $correctAnswer\n";
+        }
+        return;
+    }
+
+    // Если это не консоль, продолжаем HTML-логигу
     ?>
     <!DOCTYPE html>
     <html lang="ru">
@@ -34,7 +49,6 @@ function startCalcGame($playerName)
     </html>
     <?php
 }
-
 
 // Функция для вычисления НОД (Алгоритм Евклида)
 function generateExpression()

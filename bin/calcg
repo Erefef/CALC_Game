@@ -4,5 +4,5 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Erefef\CalcG\Controller;
-
-Controller\startGame();
+$playerName = $argv[1] ?? 'Игрок';
+Controller\startCalcGame($playerName);

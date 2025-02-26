@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Shindasayonara\\GCD\\' => array($baseDir . '/src'),
+    'Erefef\\CALC\\' => array($baseDir . '/src'),
 );

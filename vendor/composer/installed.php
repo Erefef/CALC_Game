@@ -1,21 +1,19 @@
-<?php
-
-return array(
+<?php return array(
     'root' => array(
-        'name' => 'shindasayonara/php_puchkin_iyu',
+        'name' => 'erefef/php_tenyakshev_ma',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '68d518e7e8acb1ba8e319f386ae1373d015bf226',
+        'reference' => '0f7f95b208ed1cc34eb1f58b85b9c1655eb7eba3',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'shindasayonara/php_puchkin_iyu' => array(
+        'erefef/php_tenyakshev_ma' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '68d518e7e8acb1ba8e319f386ae1373d015bf226',
+            'reference' => '0f7f95b208ed1cc34eb1f58b85b9c1655eb7eba3',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

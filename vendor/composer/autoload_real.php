@@ -9,7 +9,7 @@ class ComposerAutoloaderInit9e77d5f6b231d3ca901e81b57224cf55
     public static function loadClassLoader($class)
     {
         if ('Composer\Autoload\ClassLoader' === $class) {
-            include __DIR__ . '/ClassLoader.php';
+            require __DIR__ . '/ClassLoader.php';
         }
     }
 
@@ -22,27 +22,25 @@ class ComposerAutoloaderInit9e77d5f6b231d3ca901e81b57224cf55
             return self::$loader;
         }
 
-        include __DIR__ . '/platform_check.php';
+        require __DIR__ . '/platform_check.php';
 
         spl_autoload_register(array('ComposerAutoloaderInit9e77d5f6b231d3ca901e81b57224cf55', 'loadClassLoader'), true, true);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(__DIR__));
         spl_autoload_unregister(array('ComposerAutoloaderInit9e77d5f6b231d3ca901e81b57224cf55', 'loadClassLoader'));
 
-        include __DIR__ . '/autoload_static.php';
+        require __DIR__ . '/autoload_static.php';
         call_user_func(\Composer\Autoload\ComposerStaticInit9e77d5f6b231d3ca901e81b57224cf55::getInitializer($loader));
 
         $loader->register(true);
 
         $filesToLoad = \Composer\Autoload\ComposerStaticInit9e77d5f6b231d3ca901e81b57224cf55::$files;
-        $requireFile = \Closure::bind(
-            static function ($fileIdentifier, $file) {
-                if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
-                    $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
+        $requireFile = \Closure::bind(static function ($fileIdentifier, $file) {
+            if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
+                $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
 
-                    include $file;
-                }
-            }, null, null
-        );
+                require $file;
+            }
+        }, null, null);
         foreach ($filesToLoad as $fileIdentifier => $file) {
             $requireFile($fileIdentifier, $file);
         }
