@@ -1,11 +1,11 @@
 {
-    "name": "shindasayonara/php_puchkin_iyu",
-    "description": "Implementation of a php program on the topic \"Greatest common divisor\"",
+    "name": "erefef/php_tenyakshev_ma",
+    "description": "Implementation of a php program on the topic \"Calculator\"",
     "type": "project",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Shindasayonara\\GCD\\": "src/"
+            "Erefef\\CALC\\": "src/"
         },
         "files": [
             "src/Controller.php",
@@ -14,12 +14,12 @@
         ]
     },
     "bin": [
-        "bin/gcd"
+        "bin/calcg"
     ],
     "authors": [
         {
-            "name": "Ioann Existence",
-            "email": "disciplesvanyshu@gmail.com"
+            "name": "Morsel",
+            "email": "misha5486@mail.ru"
         }
     ],
     "minimum-stability": "stable",
