@@ -1,29 +1,28 @@
 {
     "name": "erefef/php_tenyakshev_ma",
-    "description": "Implementation of a php program on the topic \"Calculator\"",
     "type": "project",
-    "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Erefef\\CALC\\": "src/"
+            "Erefef\\Calculator\\": "src/"
         },
         "files": [
-            "src/Controller.php",
-            "src/View.php",
-            "src/Database.php"
+            "src/GameController.php",
+            "src/Database.php",
+            "src/Game.php"
         ]
     },
-    "bin": [
-        "bin/calcg"
-    ],
     "authors": [
         {
             "name": "Morsel",
             "email": "misha5486@mail.ru"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
-        "wp-cli/php-cli-tools": "^0.12.0"
+        "wp-cli/php-cli-tools": "^0.12.1",
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.7"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.10"
     }
 }

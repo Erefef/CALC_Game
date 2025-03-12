@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calculator Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="start-screen">
+        <h1>Welcome to the Calculator game!</h1>
+        <form id="start-form">
+            <label for="player-name">Введите ваше имя:</label>
+            <input type="text" id="player-name" required>
+            <button type="button" onclick="startGame()">Start Game</button>
+        </form>
+        <button type="button" onclick="showResults()">Посмотреть результаты</button>
+    </div>
+
+    <div id="game-screen" style="display: none;">
+        <h2>Выражение:</h2>
+        <p id="expression"></p>
+        <form id="answer-form">
+            <label for="player-answer">Ваш ответ:</label>
+            <input type="text" id="player-answer" required>
+            <button type="button" onclick="submitAnswer()">Ответить</button>
+            <div id="result-message"></div>
+        </form>
+        <button type="button" onclick="showScreen('start-screen')">Вернуться к началу</button>
+    </div>
+
+    <div id="game-screen" style="display:none;">
+        <h2>Выражение:</h2>
+        <p id="expression"></p>
+        <form id="answer-form">
+            <label for="player-answer">Ваш ответ:</label>
+            <input type="text" id="player-answer" required>
+            <button type="button" onclick="submitAnswer()">Ответить</button>
+            <div id="result-message"></div>
+            <button type="button" onclick="showScreen('start-screen')">Вернуться к началу</button>
+        </form>
+    </div>
+
+    <div id="results-screen" style="display: none;">
+        <h2>Результаты игр</h2>
+        <table id="results-table">
+        </table><br><br>
+        <button type="button" onclick="showScreen('start-screen')">Вернуться к началу</button>
+    </div>
+
+    <script>
+        let playerName = '';
+        let expression = '';
+        let result = 0;
+        let gameId = null;
+
+        function showScreen(screenId) {
+            const screens = ['start-screen', 'game-screen', 'results-screen'];
+            screens.forEach(id => {
+                document.getElementById(id).style.display = (id === screenId) ? 'block' : 'none';
+            });
+
+            if (screenId === 'start-screen') {
+                document.getElementById('player-name').value = '';
+    }
+        }
+
+        async function startGame() {
+            playerName = document.getElementById('player-name').value;
+            if (!playerName) {
+                alert('Введите ваше имя!');
+                return;
+            }
+
+            const response = await fetch('/games', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    player_name: playerName
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                alert("Ошибка при получении выражения: " + data.error);
+                return;
+            }
+
+            expression = data.expression;
+            result = data.result;
+            gameId = data.id;
+
+            document.getElementById('expression').innerText = expression;
+            showScreen('game-screen');
+        }
+
+        async function submitAnswer() {
+            const playerAnswer = document.getElementById('player-answer').value;
+            const response = await fetch(`/step/${gameId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    player_name: playerName,
+                    expression: expression,
+                    result: result,
+                    player_answer: playerAnswer
+                })
+            });
+
+            const data = await response.json();
+
+            const resultMessageDiv = document.getElementById('result-message');
+
+            if (data.error) {
+                resultMessageDiv.innerText = `Ошибка: ${data.error}`;
+                resultMessageDiv.style.color = 'red';
+            } else {
+                if (data.is_correct) {
+                    resultMessageDiv.innerText = "Правильно!";
+                    resultMessageDiv.style.color = 'green';
+                } else {
+                    resultMessageDiv.innerText = `Неправильно. Правильный ответ: ${result}`;
+                    resultMessageDiv.style.color = 'red';
+                }
+            }
+        }
+
+        async function showResults() {
+            const response = await fetch('/games');
+            const results = await response.json();
+
+            const resultsTable = document.getElementById('results-table');
+            resultsTable.innerHTML = '';
+
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th>Игрок</th>
+                <th>Выражение</th>
+                <th>Правильный ответ</th>
+                <th>Ответ игрока</th>
+                <th>Правильно?</th>
+                <th>Дата игры</th>
+            `;
+            resultsTable.appendChild(headerRow);
+
+            if (Array.isArray(results) && results.length > 0) {
+                results.forEach(gameResult => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${gameResult.player_name}</td>
+                        <td>${gameResult.expression}</td>
+                        <td>${gameResult.correct_answer}</td>
+                        <td>${gameResult.player_answer}</td>
+                        <td>${gameResult.is_correct ? 'Да' : 'Нет'}</td>
+                        <td>${gameResult.game_date}</td>
+                    `;
+                    resultsTable.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="6">Результаты не найдены.</td>';
+                resultsTable.appendChild(row);
+            }
+            showScreen('results-screen');
+        }
+    </script>
+</body>
+
+</html>
+

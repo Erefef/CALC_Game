@@ -6,8 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    '253c157292f75eb38082b5acb06f3f01' => $vendorDir . '/nikic/fast-route/src/functions.php',
+    '7b11c4dc42b3b3023073cb14e519683c' => $vendorDir . '/ralouphie/getallheaders/src/getallheaders.php',
+    'a4a119a56e50fbb293281d9a48007e0e' => $vendorDir . '/symfony/polyfill-php80/bootstrap.php',
     'be01b9b16925dcb22165c40b46681ac6' => $vendorDir . '/wp-cli/php-cli-tools/lib/cli/cli.php',
-    '3dc6458a26b933b2bc81ac045438e26b' => $baseDir . '/src/Controller.php',
-    '0a2c4d57f12028f5e2acbbc97010e84e' => $baseDir . '/src/View.php',
+    'c0862ffade461ed45a73fea65c9e919a' => $baseDir . '/src/GameController.php',
     '33478013c01b3d8836b5946e865a44d5' => $baseDir . '/src/Database.php',
+    '776b180b8c17eb1970672916f20c7e68' => $baseDir . '/src/Game.php',
 );

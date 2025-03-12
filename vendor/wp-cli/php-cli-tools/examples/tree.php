@@ -42,9 +42,9 @@ printf("ASCII:\n");
  *     \-Yep!
  */
 
-$tree = new \cli\Tree();
+$tree = new \cli\Tree;
 $tree->setData($data);
-$tree->setRenderer(new \cli\tree\Ascii());
+$tree->setRenderer(new \cli\tree\Ascii);
 $tree->display();
 
 printf("\nMarkdown:\n");
@@ -66,7 +66,7 @@ printf("\nMarkdown:\n");
  *                 - Yep!
  */
 
-$tree = new \cli\Tree();
+$tree = new \cli\Tree;
 $tree->setData($data);
 $tree->setRenderer(new \cli\tree\Markdown(4));
 $tree->display();

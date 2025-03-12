@@ -1,82 +1,135 @@
 <?php
 
-namespace Erefef\CalcG\Database;
+namespace Erefef\calculator;
 
-use PDO;
-
-function getDBConnection()
+class Database
 {
-    $dbPath = __DIR__ . '/../db/database.sqlite';
-    $pdo = new PDO("sqlite:$dbPath");
+    private $pdo;
 
-    // Создаем таблицу players, если она не существует
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
-        );
-    ");
+    public function __construct(string $dbPath)
+    {
+        $this->pdo = new \PDO("sqlite:" . $dbPath);
+        $this->createTables();
+    }
+    private function createTables()
+    {
+        try {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS players (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    date DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
 
-    // Создаем таблицу calc_games, если она не существует
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS calc_games (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            player_id INTEGER NOT NULL,
-            expression TEXT NOT NULL,
-            correct_answer INTEGER NOT NULL,
-            player_answer INTEGER NOT NULL,
-            result TEXT NOT NULL,
-            played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (player_id) REFERENCES players(id)
-        );
-    ");
+                CREATE TABLE IF NOT EXISTS games (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    player_id INTEGER NOT NULL,
+                    expression TEXT NOT NULL,
+                    correct_answer REAL NOT NULL,
+                    game_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (player_id) REFERENCES players (id)
+                );
 
-    return $pdo;
-}
-
-function saveCalcGame($playerName, $expression, $correctAnswer, $playerAnswer, $result)
-{
-    $pdo = getDBConnection();
-
-    // Проверяем, есть ли игрок
-    $stmt = $pdo->prepare("SELECT id FROM players WHERE name = ?");
-    $stmt->execute([$playerName]);
-    $player = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // Если игрока нет, добавляем
-    if (!$player) {
-        $stmt = $pdo->prepare("INSERT INTO players (name) VALUES (?)");
-        $stmt->execute([$playerName]);
-        $playerId = $pdo->lastInsertId();
-    } else {
-        $playerId = $player['id'];
+                CREATE TABLE IF NOT EXISTS steps (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    game_id INTEGER NOT NULL,
+                    player_answer REAL NOT NULL,
+                    is_correct INTEGER NOT NULL,
+                    step_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (game_id) REFERENCES games (id)
+                );
+            ");
+        } catch (\PDOException $e) {
+            echo "Ошибка при создании таблиц: " . $e->getMessage();
+            die();
+        }
     }
 
-    // Записываем игру
-    $stmt = $pdo->prepare("INSERT INTO calc_games (player_id, expression, correct_answer, player_answer, result) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$playerId, $expression, $correctAnswer, $playerAnswer, $result]);
-}
+    public function createGame(array $gameData): int
+    {
+        try {
+            $this->pdo->beginTransaction();
 
-function getCalcPlayersWithGames()
-{
-    $pdo = getDBConnection();
-    $stmt = $pdo->query(
-        "
-        SELECT players.name,
-               DATETIME(calc_games.played_at, '+3 hours') AS played_at,
-               calc_games.expression, calc_games.correct_answer, calc_games.player_answer, calc_games.result
-        FROM calc_games
-        JOIN players ON calc_games.player_id = players.id
-        ORDER BY calc_games.played_at DESC
-    "
-    );
+            $stmt = $this->pdo->prepare("INSERT INTO players (name) VALUES (?)");
+            $stmt->execute([$gameData['player_name']]);
+            $playerId = (int)$this->pdo->lastInsertId();
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+            $stmt = $this->pdo->prepare("
+                INSERT INTO games (player_id, expression, correct_answer)
+                VALUES (?, ?, ?)
+            ");
+            $stmt->execute([$playerId, $gameData['expression'], $gameData['result']]);
+            $gameId = (int)$this->pdo->lastInsertId();
 
-function clearCalcGamesDatabase()
-{
-    $pdo = getDBConnection();
-    $pdo->exec("DELETE FROM calc_games;");
-    $pdo->exec("DELETE FROM players;");
+            $this->pdo->commit();
+            return $gameId;
+        } catch (\PDOException $e) {
+            $this->pdo->rollBack();
+            echo "Ошибка при создании игры: " . $e->getMessage();
+            die();
+        }
+    }
+
+    public function saveStep(int $gameId, array $stepData)
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                INSERT INTO steps (game_id, player_answer, is_correct)
+                VALUES (?, ?, ?)
+            ");
+            $stmt->execute([$gameId, $stepData['player_answer'], (int)$stepData['is_correct']]);
+        } catch (\PDOException $e) {
+            echo "Ошибка при сохранении хода игры: " . $e->getMessage();
+            die();
+        }
+    }
+
+    public function getGameResults(): array
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    p.name AS player_name,
+                    g.expression,
+                    g.correct_answer,
+                    s.player_answer,
+                    s.is_correct,
+                    g.game_date
+                FROM games g
+                JOIN players p ON g.player_id = p.id
+                LEFT JOIN steps s ON g.id = s.game_id
+                ORDER BY g.game_date DESC
+            ");
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            echo "Ошибка при получении результатов игр: " . $e->getMessage();
+            return [];
+        }
+    }
+
+    public function getGameResult(int $gameId): array
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    p.name AS player_name,
+                    g.id AS game_id,
+                    g.expression,
+                    g.correct_answer,
+                    (SELECT player_answer FROM steps WHERE game_id = g.id ORDER BY step_date DESC LIMIT 1) AS player_answer,
+                    (SELECT is_correct FROM steps WHERE game_id = g.id ORDER BY step_date DESC LIMIT 1) AS is_correct,
+                    g.game_date
+                FROM games g
+                JOIN players p ON g.player_id = p.id
+                WHERE g.id = ?
+            ");
+            $stmt->execute([$gameId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: [];
+        } catch (\PDOException $e) {
+            echo "Ошибка при получении результата игры: " . $e->getMessage();
+            return [];
+        }
+    }
 }
